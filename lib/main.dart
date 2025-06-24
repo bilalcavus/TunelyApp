@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tunely_app/core/providers/genre_provider.dart';
 import 'package:tunely_app/view/app_home.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => GenreProvider())
+    ],
+    child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
