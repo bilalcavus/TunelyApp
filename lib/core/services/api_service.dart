@@ -1,5 +1,6 @@
 import 'package:tunely_app/core/helper/dio_helper.dart';
 import 'package:tunely_app/model/genre_model.dart';
+import 'package:tunely_app/model/playlist_model.dart';
 import 'package:tunely_app/model/popular_artist_model.dart';
 import 'package:tunely_app/model/trend_songs_model.dart';
 
@@ -29,7 +30,6 @@ class ApiService{
 
   Future<TrendSongsModel> fetchTrendingSongs() async {
     final response = await _dioHelper.dioGet('/chart');
-    print("Response: ${response}");
     if (response != null && response['tracks'] != null) {
       return TrendSongsModel.fromJson(response['tracks']);
     }
@@ -38,4 +38,14 @@ class ApiService{
     }
   }
 
+  Future<PlaylistsResponse> fetchPopularPlaylists() async {
+    final response = await _dioHelper.dioGet('/chart');
+    print("playlist response :$response");
+    if (response != null && response['playlists'] != null) {
+      return PlaylistsResponse.fromJson(response['playlists']);
+    }
+    else {
+      throw Exception('Failed to load popular playlists');
+    }
+  }
 }
