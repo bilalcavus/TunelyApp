@@ -2,11 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:tunely_app/core/helper/dynamic_size.dart';
 import 'package:tunely_app/core/theme/theme_provider.dart';
-import 'package:tunely_app/presentation/widgets/theme_toggle_button.dart';
 import 'package:tunely_app/presentation/viewmodel/genre_provider.dart';
+import 'package:tunely_app/presentation/widgets/theme_toggle_button.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({super.key});
@@ -52,13 +53,27 @@ class _SearchViewState extends State<SearchView> {
               children: [
                 if (genreProvider.errorMessage != null)
                   _errorWidget(context, genreProvider.errorMessage!),
-                
-                _genreGrid(genreProvider, context),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      searchIconButton(Iconsax.sort),
+                      
+                      searchIconButton(HugeIcons.strokeRoundedFilter),
+                    ],
+                  ),
+                  _genreGrid(genreProvider, context),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  IconButton searchIconButton(IconData icon) {
+    return IconButton(
+      onPressed: (){},
+      icon: Icon(icon)
     );
   }
 
@@ -159,7 +174,7 @@ class _SearchViewState extends State<SearchView> {
                             fontSize: 16),
                           overflow: TextOverflow.ellipsis,
                         ),
-                        IconButton(onPressed: (){}, icon: Icon(HugeIcons.strokeRoundedArrowRight01))
+                        IconButton(onPressed: (){}, icon: const Icon(HugeIcons.strokeRoundedArrowRight01))
                       ],
                     ),
                   ),

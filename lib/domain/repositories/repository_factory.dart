@@ -10,6 +10,7 @@ class RepositoryFactory {
   RepositoryFactory._internal();
 
   ApiService? _apiService;
+  
   ChartRepository? _chartRepository;
   GenreRepository? _genreRepository;
 

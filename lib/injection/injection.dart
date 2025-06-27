@@ -8,6 +8,7 @@ import 'package:tunely_app/data/repositories_impl/genre_repository_impl.dart';
 // Repositories
 import 'package:tunely_app/domain/repositories/chart_repository.dart';
 import 'package:tunely_app/domain/repositories/genre_repository.dart';
+
 // Usecases
 import 'package:tunely_app/domain/usecases/get_popular_artists.dart';
 import 'package:tunely_app/domain/usecases/get_popular_playlists.dart';

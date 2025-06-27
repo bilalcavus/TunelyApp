@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tunely_app/core/di/injection.dart';
+import 'package:tunely_app/injection/injection.dart';
 import 'package:tunely_app/core/theme/theme_provider.dart';
 import 'package:tunely_app/presentation/view/splash_view.dart';
 import 'package:tunely_app/presentation/viewmodel/chart_provider.dart';
@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, _) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Tunely App',
           theme: themeProvider.themeData,
           home: const SplashView(),

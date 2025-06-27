@@ -33,8 +33,6 @@ class SearchBarWidget extends StatelessWidget {
               onChanged: (value) {},
             ),
           ),
-          const SizedBox(width: 10,),
-          const Icon(HugeIcons.strokeRoundedFilter)
         ],
       ),
     );
