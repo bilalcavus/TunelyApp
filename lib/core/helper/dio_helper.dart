@@ -5,8 +5,9 @@ class DioHelper {
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: "https://api.deezer.com",
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 15),
+      sendTimeout: const Duration(seconds: 15),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -21,7 +22,13 @@ class DioHelper {
   Future<dynamic> dioGet(String endpoint, {Map<String, dynamic>? queryParams}) async {
     try {
       Response response = await _dio.get(endpoint, queryParameters: queryParams);
-      return response.data;
+      
+      // HTTP status code kontrolü
+      if (response.statusCode! >= 200 && response.statusCode! < 300) {
+        return response.data;
+      } else {
+        return _handleHttpError(response.statusCode!, response.data);
+      }
     } catch (e) {
       return _handleError(e);
     }
@@ -37,36 +44,26 @@ class DioHelper {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else {
-        return {'error': 'API yanıt kodu: ${response.statusCode}', 'message': response.data.toString(), 'statusCode': response.statusCode};
+        return _handleHttpError(response.statusCode!, response.data);
       }
     } catch (e) {
-      if (e is DioException) {
-        if (e.type == DioExceptionType.connectionTimeout) {
-        } else if (e.type == DioExceptionType.connectionError) {}
-      }
       return _handleError(e);
     }
   }
 
   Future<dynamic> dioPut(String endpoint, dynamic data) async {
     try {
-
       Response response = await _dio.put(endpoint, data: data, options: Options(validateStatus: (status) {
         return status != null && status < 500;
       }));
 
- 
       // Başarılı yanıt durumunda veriyi döndür
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else {
-        return {'error': 'API yanıt kodu: ${response.statusCode}', 'message': response.data.toString(), 'statusCode': response.statusCode};
+        return _handleHttpError(response.statusCode!, response.data);
       }
     } catch (e) {
-       if (e is DioException) {
-         if (e.response != null) {
-         }
-      }
       return _handleError(e);
     }
   }
@@ -74,31 +71,56 @@ class DioHelper {
   Future<dynamic> dioDelete(String endpoint) async {
     try {
       Response response = await _dio.delete(endpoint);
-      return response.data;
+      
+      if (response.statusCode! >= 200 && response.statusCode! < 300) {
+        return response.data;
+      } else {
+        return _handleHttpError(response.statusCode!, response.data);
+      }
     } catch (e) {
       return _handleError(e);
     }
   }
 
-  dynamic _handleError(dynamic error) {
+  Map<String, dynamic> _handleHttpError(int statusCode, dynamic data) {
+    String message = 'HTTP Hata: $statusCode';
+    
+    if (data != null) {
+      if (data is Map<String, dynamic> && data.containsKey('message')) {
+        message = data['message'];
+      } else if (data is String) {
+        message = data;
+      }
+    }
+    
+    return {
+      'error': message,
+      'statusCode': statusCode,
+      'data': data,
+    };
+  }
+
+  Map<String, dynamic> _handleError(dynamic error) {
     if (error is DioException) {
       switch (error.type) {
         case DioExceptionType.connectionTimeout:
-          return {'error': 'Bağlantı zaman aşımına uğradı'};
+          return {'error': 'Bağlantı zaman aşımına uğradı (15 saniye)'};
         case DioExceptionType.receiveTimeout:
-          return {'error': 'Yanıt zaman aşımına uğradı'};
+          return {'error': 'Yanıt zaman aşımına uğradı (15 saniye)'};
+        case DioExceptionType.sendTimeout:
+          return {'error': 'Gönderim zaman aşımına uğradı (15 saniye)'};
         case DioExceptionType.badResponse:
           if (error.response != null) {
-            return {'error': 'Hatalı yanıt: ${error.response?.statusCode}', 'message': error.response?.data.toString() ?? 'Bilinmeyen hata', 'statusCode': error.response?.statusCode};
+            return _handleHttpError(error.response!.statusCode!, error.response!.data);
           }
           return {'error': 'Hatalı yanıt: ${error.response?.statusCode}'};
         case DioExceptionType.cancel:
           return {'error': 'İstek iptal edildi'};
         case DioExceptionType.connectionError:
-          return {'error': 'Bağlantı hatası'};
+          return {'error': 'İnternet bağlantısı hatası. Lütfen bağlantınızı kontrol edin.'};
         case DioExceptionType.unknown:
           if (error.error != null) {
-            return {'error': 'Hata: ${error.error.toString()}'};
+            return {'error': 'Bilinmeyen hata: ${error.error.toString()}'};
           }
           return {'error': 'Bilinmeyen bir hata oluştu'};
         default:

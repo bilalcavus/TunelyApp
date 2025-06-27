@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tunely_app/core/helper/dynamic_size.dart';
+import 'package:tunely_app/core/theme/custom_theme_colors.dart';
 
 class CustomBottomNavbar extends StatelessWidget {
   final int currentIndex;
@@ -18,7 +19,7 @@ class CustomBottomNavbar extends StatelessWidget {
     return Container(
       height: context.dynamicHeight(0.08),
       decoration: BoxDecoration(
-        color: Colors.grey.shade300,
+        color: CustomThemeColors.bottomNavBarColor(context),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -46,14 +47,14 @@ class CustomBottomNavbar extends StatelessWidget {
               label: 'Ara',
             ),
           ),
-          // Expanded(
-          //   child: _buildNavItem(
-          //     context,
-          //     index: 2,
-          //     icon: HugeIcons.strokeRoundedUser,
-          //     label: 'Profil',
-          //   ),
-          // ),
+          Expanded(
+            child: _buildNavItem(
+              context,
+              index: 2,
+              icon: HugeIcons.strokeRoundedUser,
+              label: 'Profil',
+            ),
+          ),
         ],
       ),
     );
@@ -82,14 +83,14 @@ class CustomBottomNavbar extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isSelected ? const Color(0xFFcb1267) : Colors.grey[600],
+              color: isSelected ? CustomThemeColors.bottomSelectedItemColor(context) : Colors.grey[600],
               size: context.dynamicWidth(0.06),
             ),
             SizedBox(height: context.dynamicHeight(0.005)),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? const Color(0xFFcb1267) : Colors.grey[600],
+                color: isSelected ? CustomThemeColors.bottomSelectedItemColor(context) : Colors.grey[600],
                 fontSize: context.dynamicHeight(0.014),
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),

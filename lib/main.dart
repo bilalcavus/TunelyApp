@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tunely_app/core/providers/chart_provider.dart';
-import 'package:tunely_app/core/providers/genre_provider.dart';
-import 'package:tunely_app/core/providers/playlist_provider.dart';
-import 'package:tunely_app/navigation/app_navigation.dart';
+import 'package:tunely_app/core/theme/theme_provider.dart';
+import 'package:tunely_app/view/navigation/app_navigation.dart';
+import 'package:tunely_app/viewmodel/chart_provider.dart';
+import 'package:tunely_app/viewmodel/genre_provider.dart';
+import 'package:tunely_app/viewmodel/playlist_provider.dart';
 
 void main() {
   runApp(MultiProvider(
     providers: [
+      ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ChangeNotifierProvider(create: (_) => GenreProvider()),
       ChangeNotifierProvider(create: (_) => ChartProvider()),
       ChangeNotifierProvider(create: (_) => PlaylistProvider())
@@ -21,13 +23,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child){
+        return MaterialApp(
       title: 'Tunely App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: themeProvider.themeData,
       home: const AppNavigation(),
-    );
+      );
+    });
   }
 }

@@ -1,7 +1,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tunely_app/model/album_model.dart';
-import 'package:tunely_app/model/artist_model.dart';
+import 'package:tunely_app/data/model/album_model.dart';
+import 'package:tunely_app/data/model/artist_model.dart';
 
 part 'trend_songs_model.g.dart';
 

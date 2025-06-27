@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tunely_app/core/services/api_service.dart';
-import 'package:tunely_app/model/genre_model.dart';
+import 'package:tunely_app/data/model/genre_model.dart';
 
 class GenreProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -8,13 +8,14 @@ class GenreProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
-
   GenreList? get genres => _genreList;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
+
   Future<void> fetchGenres() async {
     _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
 
     try {
@@ -24,15 +25,27 @@ class GenreProvider extends ChangeNotifier {
         _errorMessage = null;
       } else {
         _genreList = GenreList(data: []);
-        _errorMessage = "No genres found";
+        _errorMessage = "Tür bulunamadı";
       }
     }
     catch(e){
-      _errorMessage = e.toString();
+      _genreList = GenreList(data: []);
+      _errorMessage = "Türler yüklenirken hata oluştu: ${e.toString()}";
     }
     finally{
       _isLoading = false;
       notifyListeners();
     }
-  }  
+  }
+
+  // Hata mesajını temizle
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  // Verileri yenile
+  Future<void> refreshData() async {
+    await fetchGenres();
+  }
 }
