@@ -16,6 +16,12 @@ Album _$AlbumFromJson(Map<String, dynamic> json) => Album(
       coverXl: json['cover_xl'] as String,
       md5Image: json['md5_image'] as String,
       tracklist: json['tracklist'] as String,
+      recordType: json['record_type'] as String?,
+      explicitLyrics: json['explicit_lyrics'] as bool?,
+      position: (json['position'] as num?)?.toInt(),
+      artist: json['artist'] == null
+          ? null
+          : ArtistModel.fromJson(json['artist'] as Map<String, dynamic>),
       type: json['type'] as String,
     );
 
@@ -28,6 +34,10 @@ Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
       'cover_big': instance.coverBig,
       'cover_xl': instance.coverXl,
       'md5_image': instance.md5Image,
+      'record_type': instance.recordType,
       'tracklist': instance.tracklist,
+      'explicit_lyrics': instance.explicitLyrics,
+      'position': instance.position,
+      'artist': instance.artist,
       'type': instance.type,
     };

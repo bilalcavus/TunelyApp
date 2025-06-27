@@ -1,5 +1,7 @@
 import 'package:tunely_app/core/error/error_handler.dart';
 import 'package:tunely_app/core/services/api_service.dart';
+import 'package:tunely_app/data/models/album_track_model.dart';
+import 'package:tunely_app/data/models/albums_response_model.dart';
 import 'package:tunely_app/data/models/playlist_model.dart';
 import 'package:tunely_app/data/models/popular_artist_model.dart';
 import 'package:tunely_app/data/models/trend_songs_model.dart';
@@ -37,7 +39,14 @@ class ChartRepositoryImpl implements ChartRepository {
   @override
   Future<TrendSongsModel> fetchTrendingSongs() {
     return handleRepositoryOperation(
-      operation: () => _apiService.fetchTrendingSongs(),
+      operation: () async {
+        try {
+          final result = await _apiService.fetchTrendingSongs();
+          return result;
+        } catch (e) {
+          rethrow;
+        }
+      },
       errorMessage: 'Fetching trending songs are failed'
     );
   }
@@ -45,5 +54,15 @@ class ChartRepositoryImpl implements ChartRepository {
   @override
   Future<PlaylistsResponse> fetchPopularPlaylists() {
     return handleRepositoryOperation(operation: () => _apiService.fetchPopularPlaylists());
+  }
+
+  @override
+  Future<AlbumsResponse> fetchTopAlbums() {
+    return handleRepositoryOperation(operation: () => _apiService.fetchTopAlbums());
+  }
+
+  @override
+  Future<AlbumTrackResponse> fetchAlbumTracks(int albumId) {
+    return handleRepositoryOperation(operation: () => _apiService.fetchAlbumTracks(albumId));
   }
 }

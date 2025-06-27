@@ -6,7 +6,7 @@ class GetTrendingSongs {
 
   GetTrendingSongs(this.repository);
 
-  Future<TrendSongsModel> call(){
-    return repository.fetchTrendingSongs();
+  Future<TrendSongsModel> call()  {
+     return repository.fetchTrendingSongs();
   }
 }

@@ -8,10 +8,11 @@ import 'package:tunely_app/data/repositories_impl/genre_repository_impl.dart';
 // Repositories
 import 'package:tunely_app/domain/repositories/chart_repository.dart';
 import 'package:tunely_app/domain/repositories/genre_repository.dart';
-
+import 'package:tunely_app/domain/usecases/get_album_tracks.dart';
 // Usecases
 import 'package:tunely_app/domain/usecases/get_popular_artists.dart';
 import 'package:tunely_app/domain/usecases/get_popular_playlists.dart';
+import 'package:tunely_app/domain/usecases/get_top_albums.dart';
 import 'package:tunely_app/domain/usecases/get_trending_songs.dart';
 import 'package:tunely_app/presentation/viewmodel/chart_provider.dart';
 // ViewModels
@@ -37,12 +38,14 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<GetPopularArtists>(() => GetPopularArtists(getIt()));
   getIt.registerLazySingleton<GetTrendingSongs>(() => GetTrendingSongs(getIt()));
   getIt.registerLazySingleton<GetPopularPlaylists>(() => GetPopularPlaylists(getIt()));
+  getIt.registerLazySingleton<GetTopAlbums>(() => GetTopAlbums(getIt()));
+  getIt.registerLazySingleton<GetAlbumTracks>(() => GetAlbumTracks(getIt()));
 
   // getIt.registerLazySingleton<GetGenres>(() => GetGenres(getIt()));
   // getIt.registerLazySingleton<GetPopularPlaylists>(() => GetPopularPlaylists(getIt()));
 
   // ViewModels
-  getIt.registerFactory(() => ChartProvider(getIt(), getIt(), getIt()));
+  getIt.registerFactory(() => ChartProvider(getIt(), getIt(), getIt(), getIt()));
   getIt.registerFactory(() => GenreProvider());
   // getIt.registerFactory(() => PlaylistViewModel(getIt()));
 }

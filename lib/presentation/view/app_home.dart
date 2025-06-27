@@ -4,8 +4,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:tunely_app/core/helper/dynamic_size.dart';
 import 'package:tunely_app/core/theme/custom_theme_colors.dart';
-import 'package:tunely_app/presentation/widgets/search_bar_widget.dart';
 import 'package:tunely_app/presentation/viewmodel/chart_provider.dart';
+import 'package:tunely_app/presentation/widgets/search_bar_widget.dart';
 
 class AppHome extends StatefulWidget {
   const AppHome({super.key});
@@ -50,9 +50,9 @@ class _AppHomeState extends State<AppHome> {
                 SizedBox(height: context.dynamicHeight(0.02)),
                 _popularArtists(context, chartProvider),
                 SizedBox(height: context.dynamicHeight(0.03)),
-                _sectionTitle(context, "Popüler Çalma Listeleri"),
+                _sectionTitle(context, "Top Albümler"),
                 SizedBox(height: context.dynamicHeight(0.01)),
-                _topPlaylists(context, chartProvider),
+                _topAlbums(context, chartProvider),
                 SizedBox(height: context.dynamicHeight(0.03)),
                 _trendSongs(context, chartProvider),
                 SizedBox(height: context.dynamicHeight(0.03)),
@@ -88,7 +88,7 @@ class _AppHomeState extends State<AppHome> {
     );
   }
 
-  SizedBox _topPlaylists(BuildContext context, ChartProvider chartProvider) {
+  SizedBox _topAlbums(BuildContext context, ChartProvider chartProvider) {
     if (chartProvider.isLoading) {
       return SizedBox(
         height: context.dynamicHeight(0.25),
@@ -96,7 +96,7 @@ class _AppHomeState extends State<AppHome> {
       );
     }
 
-    if (chartProvider.popularPlaylists == null || chartProvider.popularPlaylists!.data.isEmpty) {
+    if (chartProvider.topAlbums == null || chartProvider.topAlbums!.data.isEmpty) {
       return SizedBox(
         height: context.dynamicHeight(0.25),
         child: Center(
@@ -106,7 +106,7 @@ class _AppHomeState extends State<AppHome> {
               Icon(Icons.playlist_play, size: 50, color: Colors.grey.shade400),
               SizedBox(height: context.dynamicHeight(0.01)),
               Text(
-                "Çalma listesi bulunamadı",
+                "topAlbums listesi bulunamadı",
                 style: TextStyle(color: Colors.grey.shade600),
               ),
             ],
@@ -119,7 +119,7 @@ class _AppHomeState extends State<AppHome> {
       height: context.dynamicHeight(0.25),
       child: GridView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: chartProvider.popularPlaylists!.data.length > 6 ? 6 : chartProvider.popularPlaylists!.data.length,
+        itemCount: chartProvider.topAlbums!.data.length > 6 ? 6 : chartProvider.topAlbums!.data.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: context.dynamicHeight(0.02),
@@ -127,7 +127,7 @@ class _AppHomeState extends State<AppHome> {
           childAspectRatio: 0.32,
         ),
         itemBuilder: (context, index){
-          final playlist = chartProvider.popularPlaylists!.data[index];
+          final topAlbum = chartProvider.topAlbums!.data[index];
           return Container(
             height: context.dynamicHeight(0.2),
             width: context.dynamicWidth(0.5),
@@ -144,7 +144,7 @@ class _AppHomeState extends State<AppHome> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
                     child: Image.network(
-                      playlist.pictureMedium, 
+                      topAlbum.cover, 
                       fit: BoxFit.fill,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
@@ -162,7 +162,7 @@ class _AppHomeState extends State<AppHome> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          playlist.title, 
+                          topAlbum.title, 
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontSize: context.dynamicWidth(0.04),
                             fontWeight: FontWeight.bold
@@ -171,7 +171,7 @@ class _AppHomeState extends State<AppHome> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          playlist.user.name, 
+                          topAlbum.artist!.name, 
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontSize: context.dynamicWidth(0.035)
                           ),

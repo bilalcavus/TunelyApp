@@ -1,4 +1,6 @@
 import 'package:tunely_app/core/helper/dio_helper.dart';
+import 'package:tunely_app/data/models/album_track_model.dart';
+import 'package:tunely_app/data/models/albums_response_model.dart';
 import 'package:tunely_app/data/models/genre_model.dart';
 import 'package:tunely_app/data/models/playlist_model.dart';
 import 'package:tunely_app/data/models/popular_artist_model.dart';
@@ -49,13 +51,17 @@ class ApiService{
   Future<TrendSongsModel> fetchTrendingSongs() async {
     try {
       final response = await _dioHelper.dioGet('/chart');
-      
       if (response is Map<String, dynamic> && response.containsKey('error')) {
         throw Exception(response['error']);
       }
       
       if (response != null && response['tracks'] != null) {
-        return TrendSongsModel.fromJson(response['tracks']);
+        try {
+          final result = TrendSongsModel.fromJson(response['tracks']);
+          return result;
+        } catch (parseError) {
+          throw Exception('JSON parsing error: $parseError');
+        }
       }
       else {
         throw Exception('Trend parça verisi bulunamadı');
@@ -81,6 +87,44 @@ class ApiService{
       }
     } catch (e) {
       throw Exception('Popüler çalma listeleri yüklenirken hata oluştu: ${e.toString()}');
+    }
+  }
+
+  Future<AlbumsResponse> fetchTopAlbums() async {
+    try {
+      final response = await _dioHelper.dioGet('/chart');
+      
+      if (response is Map<String, dynamic> && response.containsKey('error')) {
+        throw Exception(response['error']);
+      }
+      
+      if (response != null && response['albums'] != null) {
+        return AlbumsResponse.fromJson(response['albums']);
+      }
+      else {
+        throw Exception('Top albums verisi bulunamadı');
+      }
+    } catch (e) {
+      throw Exception('Album listeleri yüklenirken hata oluştu: ${e.toString()}');
+    }
+  }
+
+  Future<AlbumTrackResponse> fetchAlbumTracks(int albumId) async {
+    try {
+      final response = await _dioHelper.dioGet('/chart/$albumId/tracks');
+      
+      if (response is Map<String, dynamic> && response.containsKey('error')) {
+        throw Exception(response['error']);
+      }
+      
+      if (response != null && response['data'] != null) {
+        return AlbumTrackResponse.fromJson(response['data']);
+      }
+      else {
+        throw Exception('Albüm şarkı verisi bulunamadı');
+      }
+    } catch (e) {
+      throw Exception('Albüm şarkı listeleri yüklenirken hata oluştu: ${e.toString()}');
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:tunely_app/data/models/artist_model.dart';
 
 part 'album_model.g.dart';
 
@@ -23,7 +24,15 @@ class Album {
   @JsonKey(name: 'md5_image')
   final String md5Image;
 
+  @JsonKey(name: 'record_type')
+  final String? recordType;
+
   final String tracklist;
+  
+  @JsonKey(name: 'explicit_lyrics')
+  final bool? explicitLyrics;
+  final int? position;
+  final ArtistModel? artist;
   final String type;
 
   Album({
@@ -36,6 +45,10 @@ class Album {
     required this.coverXl,
     required this.md5Image,
     required this.tracklist,
+     this.recordType,
+     this.explicitLyrics,
+     this.position,
+     this.artist,
     required this.type,
   });
 

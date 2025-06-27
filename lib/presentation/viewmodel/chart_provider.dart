@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tunely_app/data/models/albums_response_model.dart';
 import 'package:tunely_app/data/models/playlist_model.dart';
 import 'package:tunely_app/data/models/popular_artist_model.dart';
 import 'package:tunely_app/data/models/trend_songs_model.dart';
 import 'package:tunely_app/domain/usecases/get_popular_artists.dart';
 import 'package:tunely_app/domain/usecases/get_popular_playlists.dart';
+import 'package:tunely_app/domain/usecases/get_top_albums.dart';
 import 'package:tunely_app/domain/usecases/get_trending_songs.dart';
 
 class ChartProvider extends ChangeNotifier  {
@@ -11,8 +13,9 @@ class ChartProvider extends ChangeNotifier  {
   final GetPopularArtists getPopularArtists;
   final GetTrendingSongs getTrendingSongs;
   final GetPopularPlaylists getPopularPlaylists;
+  final GetTopAlbums getTopAlbums;
 
-  ChartProvider(this.getPopularArtists, this.getTrendingSongs, this.getPopularPlaylists);
+  ChartProvider(this.getPopularArtists, this.getTrendingSongs, this.getPopularPlaylists, this.getTopAlbums);
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -31,7 +34,8 @@ class ChartProvider extends ChangeNotifier  {
   TrendSongsModel? _trendingSongs;
   TrendSongsModel? get trendingSongs => _trendingSongs;
 
-
+  AlbumsResponse? _topAlbums;
+  AlbumsResponse? get topAlbums => _topAlbums;
   
   PlaylistsResponse? _popularPlaylists;
   PlaylistsResponse? get popularPlaylists => _popularPlaylists;
@@ -49,11 +53,11 @@ class ChartProvider extends ChangeNotifier  {
       await Future.wait([
         fetchPopularArtists(),
         fetchTrendingSongs(),
-        fetchPopularPlaylists(),
+        fetchTopAlbums(),
       ]);
       _isInitialized = true;
     } catch (e) {
-      _errorMessage = "Veriler yüklenirken hata oluştu: \\n${e.toString()}";
+      _errorMessage = "Veriler yüklenirken hata oluştu: \n${e.toString()}";
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -88,17 +92,16 @@ class ChartProvider extends ChangeNotifier  {
     notifyListeners();
     try {
       final response = await getTrendingSongs();
-      
       if (response.data.isNotEmpty) {
         _trendingSongs = response;
         _errorMessage = null;
       } else {
-        _trendingSongs = TrendSongsModel(0, data: []);
+        _trendingSongs = TrendSongsModel(data: [], total: 0);
         _errorMessage = "Trend parça bulunamadı";
       }
     } catch (e) {
-      _trendingSongs = TrendSongsModel(0, data: []);
-      _errorMessage = "Trend parçalar yüklenirken hata oluştu: \\n${e.toString()}";
+      _trendingSongs = TrendSongsModel(data: [], total: 0);
+      _errorMessage = "Trend parçalar yüklenirken hata oluştu: \n${e.toString()}";
     } finally {
       _isLoadingSongs = false;
       notifyListeners();
@@ -121,6 +124,28 @@ class ChartProvider extends ChangeNotifier  {
     } catch (e) {
       _popularPlaylists = PlaylistsResponse(data: [], total: 0);
       _errorMessage = "Çalma listeleri yüklenirken hata oluştu: \\n${e.toString()}";
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchTopAlbums() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final response = await getTopAlbums();
+      if (response.data.isNotEmpty) {
+        _topAlbums = response;
+        _errorMessage = null;
+      } else {
+        _topAlbums = AlbumsResponse(data: [], total: 0);
+        _errorMessage = "Top albums bulunamadı";
+      }
+    } catch (e) {
+      _topAlbums = AlbumsResponse(data: [], total: 0);
+      _errorMessage = "Top albums yüklenirken hata oluştu: \n${e.toString()}";
     } finally {
       _isLoading = false;
       notifyListeners();
