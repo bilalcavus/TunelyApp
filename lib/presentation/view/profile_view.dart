@@ -7,7 +7,7 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Profilim')),
-      body: Center(
+      body: const Center(
         child: Text('profil sayfası'),
       ),
     );

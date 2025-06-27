@@ -23,7 +23,7 @@ class CustomThemeColors {
 
   static Color homeContainerColor (BuildContext context){
     return isDarkMode(context) 
-        ? Color.fromARGB(255, 22, 22, 22)
+        ? const Color.fromARGB(255, 22, 22, 22)
         : Colors.grey.shade200;
   }
 

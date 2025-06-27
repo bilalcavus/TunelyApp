@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tunely_app/core/widgets/custom_bottom_navbar.dart';
-import 'package:tunely_app/view/app_home.dart';
-import 'package:tunely_app/view/profile_view.dart';
-import 'package:tunely_app/view/search_view.dart';
-import 'package:tunely_app/viewmodel/navigation_provider.dart';
+import 'package:tunely_app/presentation/widgets/custom_bottom_navbar.dart';
+import 'package:tunely_app/presentation/view/app_home.dart';
+import 'package:tunely_app/presentation/view/profile_view.dart';
+import 'package:tunely_app/presentation/view/search_view.dart';
+import 'package:tunely_app/presentation/viewmodel/navigation_provider.dart';
 
 class AppNavigation extends StatelessWidget {
   const AppNavigation({super.key});

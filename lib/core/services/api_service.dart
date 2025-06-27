@@ -1,8 +1,8 @@
 import 'package:tunely_app/core/helper/dio_helper.dart';
-import 'package:tunely_app/data/model/genre_model.dart';
-import 'package:tunely_app/data/model/playlist_model.dart';
-import 'package:tunely_app/data/model/popular_artist_model.dart';
-import 'package:tunely_app/data/model/trend_songs_model.dart';
+import 'package:tunely_app/data/models/genre_model.dart';
+import 'package:tunely_app/data/models/playlist_model.dart';
+import 'package:tunely_app/data/models/popular_artist_model.dart';
+import 'package:tunely_app/data/models/trend_songs_model.dart';
 
 class ApiService{
   final DioHelper _dioHelper = DioHelper();

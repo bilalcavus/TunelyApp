@@ -4,9 +4,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:tunely_app/core/helper/dynamic_size.dart';
 import 'package:tunely_app/core/theme/custom_theme_colors.dart';
-import 'package:tunely_app/core/widgets/search_bar_widget.dart';
-import 'package:tunely_app/viewmodel/chart_provider.dart';
-import 'package:tunely_app/viewmodel/playlist_provider.dart';
+import 'package:tunely_app/presentation/widgets/search_bar_widget.dart';
+import 'package:tunely_app/presentation/viewmodel/chart_provider.dart';
 
 class AppHome extends StatefulWidget {
   const AppHome({super.key});
@@ -17,34 +16,13 @@ class AppHome extends StatefulWidget {
 
 class _AppHomeState extends State<AppHome> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-    final chartProvider = context.read<ChartProvider>();
-    final playlistProvider = context.read<PlaylistProvider>();
-
-    chartProvider.fetchPopularArtists();
-    chartProvider.fetchTrendingSongs();
-    playlistProvider.fetchPopularPlaylists();
-    });
-  }
-  @override
   Widget build(BuildContext context) {
     final chartProvider = context.watch<ChartProvider>();
-    final playlistProvider = context.watch<PlaylistProvider>();
-    if (chartProvider.isLoading || playlistProvider.isLoading) {
-      return Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-    
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
           await Future.wait([
             chartProvider.refreshData(),
-            playlistProvider.refreshData(),
           ]);
         },
         child: SingleChildScrollView(
@@ -65,8 +43,8 @@ class _AppHomeState extends State<AppHome> {
                 // Hata mesajları göster
                 if (chartProvider.errorMessage != null)
                   _errorWidget(context, chartProvider.errorMessage!),
-                if (playlistProvider.errorMessage != null)
-                  _errorWidget(context, playlistProvider.errorMessage!),
+                if (chartProvider.errorMessage != null)
+                  _errorWidget(context, chartProvider.errorMessage!),
                 
                 _sectionTitle(context, "Popüler Sanatçılar"),
                 SizedBox(height: context.dynamicHeight(0.02)),
@@ -74,7 +52,7 @@ class _AppHomeState extends State<AppHome> {
                 SizedBox(height: context.dynamicHeight(0.03)),
                 _sectionTitle(context, "Popüler Çalma Listeleri"),
                 SizedBox(height: context.dynamicHeight(0.01)),
-                _topPlaylists(context, playlistProvider),
+                _topPlaylists(context, chartProvider),
                 SizedBox(height: context.dynamicHeight(0.03)),
                 _trendSongs(context, chartProvider),
                 SizedBox(height: context.dynamicHeight(0.03)),
@@ -110,15 +88,15 @@ class _AppHomeState extends State<AppHome> {
     );
   }
 
-  SizedBox _topPlaylists(BuildContext context, PlaylistProvider playlistProvider) {
-    if (playlistProvider.isLoading) {
+  SizedBox _topPlaylists(BuildContext context, ChartProvider chartProvider) {
+    if (chartProvider.isLoading) {
       return SizedBox(
         height: context.dynamicHeight(0.25),
         child: const Center(child: CircularProgressIndicator()),
       );
     }
 
-    if (playlistProvider.popularPlaylists == null || playlistProvider.popularPlaylists!.data.isEmpty) {
+    if (chartProvider.popularPlaylists == null || chartProvider.popularPlaylists!.data.isEmpty) {
       return SizedBox(
         height: context.dynamicHeight(0.25),
         child: Center(
@@ -141,7 +119,7 @@ class _AppHomeState extends State<AppHome> {
       height: context.dynamicHeight(0.25),
       child: GridView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: playlistProvider.popularPlaylists!.data.length > 6 ? 6 : playlistProvider.popularPlaylists!.data.length,
+        itemCount: chartProvider.popularPlaylists!.data.length > 6 ? 6 : chartProvider.popularPlaylists!.data.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: context.dynamicHeight(0.02),
@@ -149,7 +127,7 @@ class _AppHomeState extends State<AppHome> {
           childAspectRatio: 0.32,
         ),
         itemBuilder: (context, index){
-          final playlist = playlistProvider.popularPlaylists!.data[index];
+          final playlist = chartProvider.popularPlaylists!.data[index];
           return Container(
             height: context.dynamicHeight(0.2),
             width: context.dynamicWidth(0.5),
@@ -251,7 +229,7 @@ class _AppHomeState extends State<AppHome> {
             const Text("Bu hafta en çok dinlenen parçalar"),
             SizedBox(height: context.dynamicHeight(0.01)),
             
-            if (chartProvider.isLoading)
+            if (chartProvider.isLoadingSongs)
               const Expanded(
                 child: Center(child: CircularProgressIndicator()),
               )
@@ -315,7 +293,7 @@ class _AppHomeState extends State<AppHome> {
   }
 
   SizedBox _popularArtists(BuildContext context, ChartProvider chartProvider) {
-    if (chartProvider.isLoading) {
+    if (chartProvider.isLoadingArtists) {
       return SizedBox(
         height: context.dynamicHeight(0.15),
         child: const Center(child: CircularProgressIndicator()),
@@ -353,7 +331,7 @@ class _AppHomeState extends State<AppHome> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    radius: context.dynamicHeight(0.05),
+                    radius: context.dynamicHeight(0.04),
                     backgroundImage: NetworkImage(artist.picture),
                     onBackgroundImageError: (exception, stackTrace) {
                       // Hata durumunda varsayılan icon göster
@@ -363,17 +341,14 @@ class _AppHomeState extends State<AppHome> {
                       : null,
                   ),
                   SizedBox(height: context.dynamicHeight(0.01)),
-                  SizedBox(
-                    width: context.dynamicWidth(0.15),
-                    child: Text(
-                      artist.name,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontSize: context.dynamicWidth(0.04),
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                  Text(
+                    artist.name,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: context.dynamicWidth(0.04),
                     ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -392,8 +367,7 @@ class _AppHomeState extends State<AppHome> {
         children: [
           CircleAvatar(
             radius: context.dynamicHeight(0.03),
-            backgroundColor: Colors.grey.shade200,
-            child: Icon(Iconsax.user),
+            child: const Icon(Iconsax.user),
           ),
           const Text("Location"),
           IconButton(

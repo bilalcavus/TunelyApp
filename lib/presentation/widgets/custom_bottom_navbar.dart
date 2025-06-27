@@ -72,10 +72,10 @@ class CustomBottomNavbar extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: context.dynamicWidth(0.04),
-          vertical: context.dynamicHeight(0.01),
+          vertical: context.dynamicHeight(0.022),
         ),
         decoration: BoxDecoration(
-          color: isSelected ? Color.fromARGB(255, 166, 159, 192).withOpacity(0.1) : Colors.transparent,
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -87,14 +87,14 @@ class CustomBottomNavbar extends StatelessWidget {
               size: context.dynamicWidth(0.06),
             ),
             SizedBox(height: context.dynamicHeight(0.005)),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? CustomThemeColors.bottomSelectedItemColor(context) : Colors.grey[600],
-                fontSize: context.dynamicHeight(0.014),
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
+            // Text(
+            //   label,
+            //   style: TextStyle(
+            //     color: isSelected ? CustomThemeColors.bottomSelectedItemColor(context) : Colors.grey[600],
+            //     fontSize: context.dynamicHeight(0.014),
+            //     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            //   ),
+            // ),
           ],
         )
       ),
