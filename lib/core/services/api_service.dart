@@ -111,14 +111,13 @@ class ApiService{
 
   Future<AlbumTrackResponse> fetchAlbumTracks(int albumId) async {
     try {
-      final response = await _dioHelper.dioGet('/chart/$albumId/tracks');
-      
+      final response = await _dioHelper.dioGet('/album/$albumId/tracks');      
       if (response is Map<String, dynamic> && response.containsKey('error')) {
         throw Exception(response['error']);
       }
       
       if (response != null && response['data'] != null) {
-        return AlbumTrackResponse.fromJson(response['data']);
+        return AlbumTrackResponse.fromJson(response);
       }
       else {
         throw Exception('Albüm şarkı verisi bulunamadı');

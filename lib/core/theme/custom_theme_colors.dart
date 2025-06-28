@@ -21,13 +21,24 @@ class CustomThemeColors {
         : Colors.black;
   }
 
-  static Color homeContainerColor (BuildContext context){
+  static Color homeContainerColor(BuildContext context){
     return isDarkMode(context) 
         ? const Color.fromARGB(255, 22, 22, 22)
         : Colors.grey.shade200;
   }
 
-  static Color searchBarContainer (BuildContext context){
+  static Color searchBarContainer(BuildContext context){
+    return isDarkMode(context) 
+        ? Colors.grey.shade900
+        : Colors.grey.shade200;
+  }
+
+  static Color albumTrackIconContainer(BuildContext context){
+    return isDarkMode(context) 
+        ? Colors.grey.shade200
+        : Colors.grey.shade900;
+  }
+  static Color albumTrackIcon(BuildContext context){
     return isDarkMode(context) 
         ? Colors.grey.shade900
         : Colors.grey.shade200;

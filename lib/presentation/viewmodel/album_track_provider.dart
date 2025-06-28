@@ -20,39 +20,19 @@ class AlbumTrackProvider extends ChangeNotifier {
   AlbumTrackResponse? _albumTracks;
   AlbumTrackResponse? get albumTracks => _albumTracks;
 
+  AlbumTrackResponse? _totalSongs;
+  AlbumTrackResponse? get totalSongs => _totalSongs;
 
-  bool _isInitialized = false;
-  bool get isInitialized => _isInitialized;
-
-  Future<void> initializeData() async {
-    if (_isInitialized) return;
+  Future<void> fetchAlbumTracks(int albumId) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      await Future.wait([
-        fetchAlbumTracks(),
-      ]);
-      _isInitialized = true;
-    } catch (e) {
-      _errorMessage = "Veriler yüklenirken hata oluştu: \n${e.toString()}";
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> fetchAlbumTracks() async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
-      final response = await getAlbumTracks(albumId!);
+      final response = await getAlbumTracks(albumId);
       if (response.data.isNotEmpty) {
         _albumTracks = response;
-        _albumId = //TODO BURASI AYARLANACAK
+        
         _errorMessage = null;
       } else {
         _albumTracks = AlbumTrackResponse(data: [], total: 0);

@@ -68,7 +68,7 @@ class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primarySwatch: Colors.brown,
-    scaffoldBackgroundColor: Color.fromARGB(255, 27, 27, 31),
+    scaffoldBackgroundColor: Colors.black,
     cardColor: Colors.white12,
     appBarTheme: AppBarTheme(
       color: Colors.transparent

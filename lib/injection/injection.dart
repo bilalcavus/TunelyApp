@@ -14,6 +14,8 @@ import 'package:tunely_app/domain/usecases/get_popular_artists.dart';
 import 'package:tunely_app/domain/usecases/get_popular_playlists.dart';
 import 'package:tunely_app/domain/usecases/get_top_albums.dart';
 import 'package:tunely_app/domain/usecases/get_trending_songs.dart';
+import 'package:tunely_app/presentation/viewmodel/album_track_provider.dart';
+import 'package:tunely_app/presentation/viewmodel/audio_provider.dart';
 import 'package:tunely_app/presentation/viewmodel/chart_provider.dart';
 // ViewModels
 import 'package:tunely_app/presentation/viewmodel/genre_provider.dart';
@@ -47,5 +49,8 @@ Future<void> setupDependencies() async {
   // ViewModels
   getIt.registerFactory(() => ChartProvider(getIt(), getIt(), getIt(), getIt()));
   getIt.registerFactory(() => GenreProvider());
+  getIt.registerFactory(() => AlbumTrackProvider(getIt()));
+  getIt.registerFactory(() => AudioProvider());
+
   // getIt.registerFactory(() => PlaylistViewModel(getIt()));
 }

@@ -3,7 +3,9 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:tunely_app/core/helper/dynamic_size.dart';
+import 'package:tunely_app/core/helper/route_helper.dart';
 import 'package:tunely_app/core/theme/custom_theme_colors.dart';
+import 'package:tunely_app/presentation/view/album_detail_view.dart';
 import 'package:tunely_app/presentation/viewmodel/chart_provider.dart';
 import 'package:tunely_app/presentation/widgets/search_bar_widget.dart';
 
@@ -128,64 +130,69 @@ class _AppHomeState extends State<AppHome> {
         ),
         itemBuilder: (context, index){
           final topAlbum = chartProvider.topAlbums!.data[index];
-          return Container(
-            height: context.dynamicHeight(0.2),
-            width: context.dynamicWidth(0.5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
-              color: CustomThemeColors.homeContainerColor(context)
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(context.dynamicWidth(0.02)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
-                    child: Image.network(
-                      topAlbum.cover, 
-                      fit: BoxFit.fill,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          width: 60,
-                          height: 60,
-                          color: Colors.grey.shade300,
-                          child: Icon(Icons.music_note, color: Colors.grey.shade600),
-                        );
-                      },
+          return InkWell(
+            onTap: (){
+              RouteHelper.push(context, AlbumDetailView(albumId: topAlbum.id, album: topAlbum,));
+            },
+            child: Container(
+              height: context.dynamicHeight(0.2),
+              width: context.dynamicWidth(0.5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
+                color: CustomThemeColors.homeContainerColor(context)
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(context.dynamicWidth(0.02)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
+                      child: Image.network(
+                        topAlbum.cover, 
+                        fit: BoxFit.fill,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: 60,
+                            height: 60,
+                            color: Colors.grey.shade300,
+                            child: Icon(Icons.music_note, color: Colors.grey.shade600),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  SizedBox(width: context.dynamicWidth(0.02)),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          topAlbum.title, 
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: context.dynamicWidth(0.04),
-                            fontWeight: FontWeight.bold
+                    SizedBox(width: context.dynamicWidth(0.02)),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            topAlbum.title, 
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: context.dynamicWidth(0.04),
+                              fontWeight: FontWeight.bold
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          topAlbum.artist!.name, 
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: context.dynamicWidth(0.035)
+                          Text(
+                            topAlbum.artist!.name, 
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: context.dynamicWidth(0.035)
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: (){},
-                    icon: const Icon(HugeIcons.strokeRoundedPlayCircle,)
-                  )
-                ],
+                    IconButton(
+                      onPressed: (){},
+                      icon: const Icon(HugeIcons.strokeRoundedPlayCircle,)
+                    )
+                  ],
+                ),
               ),
             ),
           );

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:tunely_app/core/error/error_handler.dart';
 import 'package:tunely_app/core/services/api_service.dart';
 import 'package:tunely_app/data/models/album_track_model.dart';
@@ -13,20 +14,26 @@ class ChartRepositoryImpl implements ChartRepository {
   ChartRepositoryImpl({ApiService? apiService}) : _apiService = apiService ?? ApiService();
 
   @override
-  Future<T> handleRepositoryOperation<T>({required Future<T> Function() operation, String? errorMessage}) async {
-    try {
-      return await operation();
-    } catch (e) {
-      if (e is AppError) {
-        rethrow;
-      }
-      throw AppError(
-        message: errorMessage ?? 'Repository operation failed',
-        type: ErrorType.unknown,
-        originalError: e,
-      );
-    }
+Future<T> handleRepositoryOperation<T>({
+  required Future<T> Function() operation,
+  String? errorMessage,
+}) async {
+  try {
+    return await operation();
+  } on AppError {
+    rethrow;
+  } catch (e, stackTrace) {
+    final appError = AppError(
+      message: errorMessage ?? 'Repository operation failed',
+      type: ErrorType.unknown,
+      originalError: e,
+      stackTrace: stackTrace,
+    );
+    debugPrint('🔴 Repository Error: $appError');
+    throw appError;
   }
+}
+
 
   @override
   Future<PopularArtistList> fetchPopularArtists() {
